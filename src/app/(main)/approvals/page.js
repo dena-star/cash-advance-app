@@ -1,0 +1,40 @@
+import { redirect } from "next/navigation";
+import { createClient, getUserProfile } from "@/lib/supabase/server";
+import CashAdvanceCard from "@/components/CashAdvanceCard";
+
+export const dynamic = "force-dynamic";
+
+export default async function ApprovalsPage() {
+  const { profile } = await getUserProfile();
+  if (profile?.role !== "operational") redirect("/dashboard");
+
+  const supabase = await createClient();
+  const { data: cashAdvances } = await supabase
+    .from("cash_advances")
+    .select("*, profiles:requester_id(full_name)")
+    .eq("status", "pending")
+    .neq("requester_id", profile.id)
+    .order("created_at", { ascending: true });
+
+  return (
+    <div className="space-y-4">
+      <div>
+        <h1 className="text-lg font-semibold text-slate-900">Persetujuan</h1>
+        <p className="text-sm text-slate-500 mt-0.5">
+          Pengajuan Cash Advance yang menunggu persetujuan Anda.
+        </p>
+      </div>
+
+      <div className="space-y-3">
+        {(!cashAdvances || cashAdvances.length === 0) && (
+          <p className="text-sm text-slate-500">
+            Tidak ada pengajuan yang menunggu persetujuan.
+          </p>
+        )}
+        {cashAdvances?.map((ca) => (
+          <CashAdvanceCard key={ca.id} ca={ca} showRequester />
+        ))}
+      </div>
+    </div>
+  );
+}
