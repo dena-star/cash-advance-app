@@ -53,6 +53,7 @@ export default async function CashAdvanceDetailPage({ params }) {
   const totalSpent = balanceRow?.total_spent ?? 0;
   const totalReturned = balanceRow?.total_returned ?? 0;
   const totalReimbursed = balanceRow?.total_reimbursed ?? 0;
+  const netBalance = balance - totalReturned + totalReimbursed;
 
   return (
     <div className="space-y-4">
@@ -85,10 +86,14 @@ export default async function CashAdvanceDetailPage({ params }) {
             <p className="text-xs text-slate-500">Sisa Saldo</p>
             <p
               className={`font-semibold text-sm mt-0.5 ${
-                balance < 0 ? "text-rose-600" : "text-emerald-600"
+                netBalance < 0
+                  ? "text-rose-600"
+                  : netBalance > 0
+                    ? "text-amber-600"
+                    : "text-emerald-600"
               }`}
             >
-              {formatCurrency(balance)}
+              {formatCurrency(netBalance)}
             </p>
           </div>
         </div>
