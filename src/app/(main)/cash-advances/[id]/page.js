@@ -7,6 +7,7 @@ import StatusBadge from "@/components/StatusBadge";
 import ReceiptCard from "@/components/ReceiptCard";
 import ApprovalActions from "@/components/ApprovalActions";
 import ReturnsSection from "@/components/ReturnsSection";
+import BackButton from "@/components/BackButton";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +58,8 @@ export default async function CashAdvanceDetailPage({ params }) {
 
   return (
     <div className="space-y-4">
+      <BackButton />
+
       <div className="bg-white rounded-2xl border border-slate-200 p-5">
         <div className="flex items-start justify-between gap-2">
           <div>
